@@ -2,7 +2,8 @@
   <div class="home bg-gray-100 min-h-screen">
     <div class="max-w-7xl max-w mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-center py-12 lg:px-8 overflow-hidden">
       <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <img class="mx-auto h-12 w-auto" src="@/assets/logo.png" alt="Workflow" />
+        <img v-if="getFarmer.image == null" class="mx-auto h-12 w-auto" src="@/assets/logo.png" alt="Workflow" />
+        <img v-else class="mx-auto shadow sm:w-16 sm:h-16 w-14 h-14 rounded-full border border-gray-100" :src="getFarmer.image" alt="Workflow" />
         <h2 class="mt-8 text-center text-2xl leading-6 font-bold text-gray-900 uppercase">
           sign in
         </h2>
@@ -44,6 +45,13 @@
               <input v-if="edit" id="location" v-model="getFarmer.location" type="text" name="location" class="appearance-none block mt-1 rounded-md shadow-sm w-full p-2 border border-gray-300 placeholder-gray-400 focus:outline-none focus:shadow-md transition duration-150 ease-in-out sm:text-sm sm:leading-5" placeholder="Accra" autocomplete="location" />
               <p v-else class="appearance-none block mt-1 rounded-md shadow-sm w-full p-2 border border-gray-300 placeholder-gray-400 focus:outline-none focus:shadow-md transition duration-150 ease-in-out sm:text-sm sm:leading-5">{{ getFarmer.location }}</p>
             </div>
+            <div class="col-span-6 sm:col-span-3 mx-3 mt-8">
+              <label for="location" class="block text-sm font-medium leading-5 text-gray-700">
+                Profile Image
+              </label>
+              <input v-if="edit" type="file"  accept="image/*" ref="file" @change="onSelect" name="image" class="w-full p-2" placeholder="Upload Image" />
+              <p v-else class="appearance-none block mt-1 rounded-md shadow-sm w-full p-2 border border-gray-300 placeholder-gray-400 focus:outline-none focus:shadow-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"> <code class="break-words text-xs"> {{ getFarmer.image }}</code></p>
+            </div>
           </div>
 
           <div class="flex justify-between mt-8">
@@ -72,7 +80,8 @@ export default {
   name: 'Home',
   data () {
     return {
-      edit: false
+      edit: false,
+      image: null
     }
   },
   computed: {
@@ -80,12 +89,17 @@ export default {
   },
   methods: {
     ...mapActions(['editProfile']),
+    onSelect () {
+      const file = this.$refs.file.files[0]
+      this.image = URL.createObjectURL(file)
+    },
     editProfileIn () {
       this.editProfile({
         username: this.getFarmer.username,
         fullname: this.getFarmer.fullname,
         password: this.getFarmer.password,
-        location: this.getFarmer.location
+        location: this.getFarmer.location,
+        image: this.image
       }
       )
       this.edit = false

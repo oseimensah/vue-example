@@ -31,7 +31,8 @@ export default new Vuex.Store({
       username: 'potterz',
       fullname: 'Kwame Kyere Oduro',
       password: 'pokemon123',
-      location: 'Tamale'
+      location: 'Tamale',
+      image: null
     }
   },
   getters: {
